@@ -10,10 +10,10 @@ conn = psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (HOST, DATABAS
 # Open a cursor to send SQL commands
 cur = conn.cursor()
 # Execute a SQL SELECT command
-sql = "SELECT COUNT(*) FROM consultations.analyses_territoriales"
+sql = "SELECT COUNT(*) FROM consultations.analyses_territoriales AND date::text LIKE {date}".format(date="'2021%'")
 cur.execute(sql)
 # Fetch data line by line
 raw = cur.fetchone()
-print(raw)
-print(raw+2)
-conn.close()
+print(raw[0])
+##print(raw+2)
+##conn.close()
