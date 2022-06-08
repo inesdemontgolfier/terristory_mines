@@ -51,4 +51,6 @@ for month in months:
     except :
         data_connections.append(0)
 
+
+
 conn.close()

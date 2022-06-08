@@ -23,17 +23,24 @@ def nb_consultations_traj():
     return raw[0]
 
 
-def nb_consultations():
-    sql= "SELECT COUNT(*) FROM consultations.analyses_territoriales "
+def nb_consultations_cesba():
+    sql= "SELECT COUNT(*) FROM consultations.analyses_territoriales WHERE page='cesba'"
     cur.execute(sql)
     # Fetch data line by line
     raw = cur.fetchone()
     return raw[0]
 
-nb_consultations1= nb_consultations()
+nb_consultations_cesba1= nb_consultations_cesba()
 nb_consultations_traj1=nb_consultations_traj()
 
-print(f'Il y a eu {nb_consultations1} consulations en tout dont {nb_consultations_traj1} par la page de suivi de trajectoire')
+print(f'Il y a eu {nb_consultations_cesba1} consulations en tout dont {nb_consultations_traj1} par la page de suivi de trajectoire')
+
+plt.figure(figsize = (8, 8))
+x=[nb_consultations_cesba1, nb_consultations_traj1]
+plt.pie(x, labels=['cesba', 'suivi trajectoire' ])
+plt.legend()
+plt.show()
+
 
 ## AFFCIHAGE DE LA PROPORTION DE CONSULTATIONS PASSANT PAR LA PAGE SUIVI TRAJECTOIRE EN FONCTION DE LA DATE (il suffit de rajouter une condition dans la commande sql du code d'Inès)
 
