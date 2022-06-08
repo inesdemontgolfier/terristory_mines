@@ -70,4 +70,6 @@ plt.show()
 
 plt.bar(months,data_connections_unique,1.0)
 plt.show()
+
+
 conn.close()
