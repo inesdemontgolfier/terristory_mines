@@ -77,4 +77,8 @@ def fréquences_indic_majoritaires(data, p):
 
     return [légende, fréquences]
 
-fréquences_indic_majoritaires(fréquences_indic(noms_indicateurs()), 0.01)
+fréquences_indic_majoritaires(fréquences_indic(noms_indicateurs()), 0.05)
+
+# Attention, y'a un très gros biais : deux indicateur identiques mais dans 2 régions différentes n'ont pas le même identifiant.
+# Ici, c'est vraiment un camembert de base, où on ne regroupe pas ensemble les indicateurs identiques de plusieurs régions différentes.
+# Problème résolu dans la v2, où on sommera sur les noms, non pas sur les id.
