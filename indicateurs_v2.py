@@ -1,11 +1,14 @@
 #!/usr/bin/python3
 # http://initd.org/psycopg/docs/usage.html
-from this import d
+#from this import d
 from typing_extensions import dataclass_transform
 import psycopg2
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
+
+from irrégularités import correction_themes, correction_noms
+
 HOST = "localhost"
 USER = "postgres"
 PASSWORD = "postgres"
@@ -29,14 +32,17 @@ conn.close()
 
 df = pd.DataFrame(raw, columns=["id_indicateur", "nom", "ui_theme", "date", "region", "provenance"])
 
-def fréquences_indic_majoritaires(data, p):
+df = correction_themes(df)
+df = correction_noms(df)
+
+def fréquences_indic_majoritaires(data, p, regions):
     """Renvoie les indicateurs consultés à plus de 100*p pourcents.
     Crée une catégorie "autres" pour ceux dont la fréquence de consultation est inférieure à p.
     Plote les données.
     """
 
     fréquences = [0]
-    légende = ['autres']
+    légende = ['Autres']
   
     for indicateur, fréquence in data.items():
         if fréquence < p:
@@ -45,8 +51,11 @@ def fréquences_indic_majoritaires(data, p):
             fréquences.append(fréquence)
             légende.append(indicateur)
 
-    plt.title(f"Consultations des indicateurs")
-    plt.pie(fréquences, labels=légende, labeldistance=1., rotatelabels=True)
+    plt.title(f"""
+    Consultations des indicateurs
+    (région(s) : {', '.join((str(region) for region in regions))})
+    """)
+    plt.pie(fréquences, labels=légende, autopct='%.1f%%')
     plt.show()
 
     return [légende, fréquences]
@@ -59,7 +68,7 @@ def consultations_indicateurs(p=0.02, themes=df.ui_theme.unique(), regions=df.re
     data = df[df["ui_theme"].isin(themes) & df["region"].isin(regions)& df["provenance"].isin(provenances)]
     data_freq = dict(data["nom"].value_counts(normalize=True))
     
-    return fréquences_indic_majoritaires(data_freq, p)
+    return fréquences_indic_majoritaires(data_freq, p, regions)
 
 def consultations_themes(p=0.01, regions=df.region.unique(), provenances=df.provenance.unique()):
     """Retourne et affiche le camembert des fréquences de consultation des indicateurs, groupés par thème.
@@ -69,6 +78,6 @@ def consultations_themes(p=0.01, regions=df.region.unique(), provenances=df.prov
     data = df[df["region"].isin(regions)& df["provenance"].isin(provenances)]
     data_freq = dict(data["ui_theme"].value_counts(normalize=True))
     
-    return fréquences_indic_majoritaires(data_freq, p)
+    return fréquences_indic_majoritaires(data_freq, p, regions)
 
-consultations_themes()
+consultations_themes(regions=['nouvelle-aquitaine'])
