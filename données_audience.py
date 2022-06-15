@@ -13,8 +13,15 @@ DATABASE = "postgres"
 conn = psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (HOST, DATABASE, USER, PASSWORD))
 # Open a cursor to send SQL commands
 cur = conn.cursor()
-def monthly_connections(date):
-    sql = "SELECT COUNT(*) FROM consultations.analyses_territoriales WHERE date::text LIKE {}".format(date)
+def monthly_connections_double(date):
+    sql = "SELECT COUNT(*) FROM consultations.analyses_territoriales WHERE date::text LIKE {}".format(date) #on récupère les données de consultation d'analyse territoriale.
+    cur.execute(sql)
+# Fetch data line by line
+    raw = cur.fetchone()
+    return raw[0]
+
+def monthly_connections_unique(date):
+    sql = "SELECT COUNT(DISTINCT id_utilisateur) FROM consultations.analyses_territoriales WHERE date::text LIKE {}".format(date)
     cur.execute(sql)
 # Fetch data line by line
     raw = cur.fetchone()
@@ -44,11 +51,25 @@ for i in range (0,12):
         month+=1
     months.append(str(date_to_string(year,month)))
 
-data_connections=[]
+data_connections_double=[]
 for month in months:
     try :
-        data_connections.append(monthly_connections("'{}%'".format(month)))
+        data_connections_double.append(monthly_connections_double("'{}%'".format(month)))
     except :
-        data_connections.append(0)
+        data_connections_double.append(0)
+
+data_connections_unique=[]
+for month in months:
+    try :
+        data_connections_unique.append(monthly_connections_unique("'{}%'".format(month)))
+    except :
+        data_connections_unique.append(0)
+
+plt.bar(months,data_connections_double,1.0)
+plt.show()
+
+plt.bar(months,data_connections_unique,1.0)
+plt.show()
+
 
 conn.close()
