@@ -38,7 +38,7 @@ print(f'Il y a eu {nb_consultations_cesba1} consulations en tout dont {nb_consul
 plt.figure(figsize = (8, 8))
 x=[nb_consultations_cesba1, nb_consultations_traj1]
 plt.pie(x, labels=['Cesba', 'Suivi trajectoire' ])
-plt.title('Consultations en fonction de la provenance')
+plt.title('Provenance de la consultation')
 plt.show()
 
 
