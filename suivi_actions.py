@@ -6,6 +6,7 @@ from typing_extensions import dataclass_transform
 import psycopg2
 import datetime
 from matplotlib import pyplot as plt
+import pandas as pd
 HOST = "localhost"
 USER = "postgres"
 PASSWORD = "postgres"
@@ -24,8 +25,8 @@ def all_users():
         raw[i]= int(raw[i][0])
     return raw
 
-def user_path(user):
-    path=[]
+"""def user_path(user):
+    path=[user]
     datas= ['consultations.actions_cochees','consultations.analyses_territoriales','consultations.consultations_indicateurs']
     for data in datas: 
         sql = "SELECT  * FROM {} WHERE id_utilisateur={}".format(data, user)
@@ -33,5 +34,28 @@ def user_path(user):
         raw=cur.fetchall()
         path.append(raw)
     return path
-print(user_path(200))
+print(user_path(200))"""
+
+#import de toutes les données pour les traiter dans pandas
+
+cur.execute(" SELECT * from consultations.actions_cochees")
+raw = cur.fetchall()
+actions_cochees = pd.DataFrame(raw, columns=['id','region','listes_actions','liste_trajectoire_cible','types_actioons','date','code_territoire','type_territoire','id_utilisateur'])
+
+cur.execute("SELECT * from consultations.analyses_territoriales")
+raw = cur.fetchall()
+analyses_territoriales = pd.DataFrame(raw, columns=['id','id_utilisateur','region','code_territoire','type_territoire','page','date'])
+
+cur.execute("SELECT * from consultations.consultations_indicateurs")
+raw=cur.fetchall()
+consultations_indicateurs = pd.DataFrame(raw,columns=['id','provenance','region','id_indicateur','date','code_territoire','type_territoire','id_utilisateur'])
+
+users=all_users()
+datas= [actions_cochees,analyses_territoriales,consultations_indicateurs]
+def path(user):
+    path=pd.DataFrame(columns=['id_utilisateur','date','region','database','id_data'])
+    for data in datas:
+        user_consultation = data[data['id_utilisateur']==user]
+    
+path(200)
 conn.close()
