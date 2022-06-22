@@ -53,9 +53,17 @@ consultations_indicateurs = pd.DataFrame(raw,columns=['id','provenance','region'
 users=all_users()
 datas= [actions_cochees,analyses_territoriales,consultations_indicateurs]
 def path(user):
-    path=pd.DataFrame(columns=['id_utilisateur','date','region','database','id_data'])
+    path=pd.DataFrame(columns=['id_utilisateur','date','region','database'])
+    i=0
     for data in datas:
-        user_consultation = data[data['id_utilisateur']==user]
+        user_consultation = data[data['id_utilisateur']==user][['date','region']]
+        user_consultation = user_consultation.values.tolist()
+        for line in user_consultation :
+            path.loc[i] = [user,line[0],line[1],"a"]
+            i+=1
+    path['date']=pd.to_datetime(path['date'])
+    path.sort_values(by='date')
+    return path
     
-path(200)
+print(path(200))
 conn.close()
