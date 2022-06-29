@@ -13,14 +13,14 @@ conn = psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (HOST, DATABAS
 # Open a cursor to send SQL commands
 cur = conn.cursor()
 def monthly_connections_double(date):
-    sql = "SELECT COUNT(*) FROM consultations.analyses_territoriales WHERE date::text LIKE {}".format(date)
+    sql = "SELECT COUNT(*) FROM consultations.consultations_indicateurs WHERE date::text LIKE {}".format(date) #on récupère les données de consultation d'analyse territoriale.
     cur.execute(sql)
 # Fetch data line by line
     raw = cur.fetchone()
     return raw[0]
 
 def monthly_connections_unique(date):
-    sql = "SELECT COUNT(DISTINCT id_utilisateur) FROM consultations.analyses_territoriales WHERE date::text LIKE {}".format(date)
+    sql = "SELECT COUNT(DISTINCT id_utilisateur) FROM consultations.consultations_indicateurs WHERE date::text LIKE {}".format(date)
     cur.execute(sql)
 # Fetch data line by line
     raw = cur.fetchone()
