@@ -80,4 +80,4 @@ def consultations_themes(p=0.01, regions=df.region.unique(), provenances=df.prov
     
     return fréquences_indic_majoritaires(data_freq, p, regions)
 
-consultations_themes(regions=['nouvelle-aquitaine'])
+consultations_indicateurs(regions=['auvergne-rhone-alpes'])

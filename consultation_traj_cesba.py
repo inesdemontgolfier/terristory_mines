@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 # http://initd.org/psycopg/docs/usage.html
-from this import d
 from typing_extensions import dataclass_transform
 import psycopg2
 import datetime
