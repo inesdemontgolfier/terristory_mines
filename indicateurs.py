@@ -1,6 +1,9 @@
+# CODE OBSOLETE
+
+
+
 #!/usr/bin/python3
 # http://initd.org/psycopg/docs/usage.html
-from this import d
 from typing_extensions import dataclass_transform
 import psycopg2
 from matplotlib import pyplot as plt
@@ -77,7 +80,7 @@ def fréquences_indic_majoritaires(data, p):
 
     return [légende, fréquences]
 
-fréquences_indic_majoritaires(fréquences_indic(noms_indicateurs()), 0.05)
+fréquences_indic_majoritaires(fréquences_indic(noms_indicateurs()), 0.01)
 
 # Attention, y'a un très gros biais : deux indicateur identiques mais dans 2 régions différentes n'ont pas le même identifiant.
 # Ici, c'est vraiment un camembert de base, où on ne regroupe pas ensemble les indicateurs identiques de plusieurs régions différentes.
