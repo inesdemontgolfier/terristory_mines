@@ -1,3 +1,5 @@
+# ce fichier contient une ancienne version de réccupération de données grâce à des requêtes SQL
+# ceci est un exemple de code non optimisé pour voir l'évolution de notre code
 #!/usr/bin/python3
 # http://initd.org/psycopg/docs/usage.html
 from typing_extensions import dataclass_transform
@@ -14,45 +16,49 @@ conn = psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (HOST, DATABAS
 cur = conn.cursor()
 
 
-#Camembert des catégories
+# Représentation des catégories d'équipement sous la forme d'un diagramme circulaire en fonction de la fréquence d'appel de la catégorie
 
 def nb_carburants():
     sql = "SELECT  COUNT(*) FROM consultations.poi WHERE nom_couche  IN ('Bornes de recharge de véhicules électriques', 'Bornes hydrogène', 'Installations GnV/bio-GnV')"
     cur.execute(sql)
     raw = cur.fetchone()
     return raw[0]
-#178
 
 carburants = nb_carburants()
 print(carburants)
+
 
 def nb_infrastructures():
     sql = "SELECT  COUNT(*) FROM consultations.poi WHERE nom_couche  = 'Réseaux de chaleur'"
     cur.execute(sql)
     raw = cur.fetchone()
     return raw[0]
-#45
+
 infrastructures = nb_infrastructures()
 print(infrastructures)
+
 
 def nb_installationsEnr():
     sql = "SELECT  COUNT(*) FROM consultations.poi WHERE nom_couche  IN ('Installations géothermiques', 'Unités de méthanisation')"
     cur.execute(sql)
     raw = cur.fetchone()
     return raw[0]
-#40
+
 installationsEnr = nb_installationsEnr()
 print(installationsEnr)
+
 
 def nb_déchets():
     sql = "SELECT  COUNT(*) FROM consultations.poi WHERE nom_couche  IN ('Centres de tri', 'Déchèteries', 'Installations de stockage des déchets non dangereux', 'Plateformes de compostage', 'Recycleries', 'Unités de valorisation énergétique des déchets')"
     cur.execute(sql)
     raw = cur.fetchone()
     return raw[0]
-#214
+
 déchets = nb_déchets()
 print(déchets)
 
+
+# affichage
 plt.figure(figsize = (8, 8))
 x = [carburants, infrastructures, installationsEnr, déchets]
 plt.pie(x, labels = ['Carburants', 'Infrastructures', 'InstallationsEnr', 'Déchets'], normalize = True)
@@ -60,7 +66,8 @@ plt.legend()
 plt.show()
 
 
-#Equipements un par un
+
+# Représentation de chaque équipement sous la forme d'un diagramme circulaire en fonction de la fréquence d'appel de l'équipement
 
 def nb_bornes_elec():
     sql = "SELECT  COUNT(*) FROM consultations.poi WHERE nom_couche  = 'Bornes de recharge de véhicules électriques'"
@@ -169,7 +176,7 @@ def nb_unités_méthanisation():
 
 unités_méthanisation = nb_unités_méthanisation()
 
-
+# affichage
 plt.figure(figsize = (8, 8))
 x = [bornes_elec, infrastructures, install_bio, centres_tri, déchèteries, install_déchets_non_dangerchèteries, pateformes_compostage, recycleries, unité_valorisation, réseaux_chaleur, install_géoth, unités_méthanisation]
 plt.pie(x, labels = ['Bornes de recharge de véhicules électriques', 'Bornes hydrogène', 'Installations GnV/bio-GnV', 'Centres de tri', 'Déchèteries', 'Installations de stockage des déchets non dangereux', 'Plateformes de compostage', 'Recycleries', 'Unités de valorisation énergétique des déchets', 'Réseaux de chaleur', 'Installations géothermiques', 'Unités de méthanisation'], normalize = True)
