@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # http://initd.org/psycopg/docs/usage.html
 from symtable import Class
-from this import d
 from typing_extensions import dataclass_transform
 import psycopg2
 import datetime
@@ -50,12 +49,76 @@ cur.execute("SELECT * from consultations.consultations_indicateurs")
 raw=cur.fetchall()
 consultations_indicateurs = pd.DataFrame(raw,columns=['id','provenance','region','id_indicateur','date','code_territoire','type_territoire','id_utilisateur'])
 
+cur.execute("SELECT * from consultations.poi")
+raw=cur.fetchall()
+consultations_indicateurs = pd.DataFrame(raw,columns=['id', 'id_utilisateur', 'region','code_territoire', 'type_territoire', 'nom_couche', 'cochee', 'date'])
+
 users=all_users()
-datas= [actions_cochees,analyses_territoriales,consultations_indicateurs]
+datas= {"actions_cochees":actions_cochees,"analyses_territoriales":analyses_territoriales,"consultations_indicateurs":consultations_indicateurs}
 def path(user):
-    path=pd.DataFrame(columns=['id_utilisateur','date','region','database','id_data'])
-    for data in datas:
-        user_consultation = data[data['id_utilisateur']==user]
+    path=pd.DataFrame(columns=['id_utilisateur','date','region','database'])
+    i=0
+    for label in datas.keys():
+        data =datas[label]
+        user_consultation = data[data['id_utilisateur']==user][['date','region']]
+        user_consultation = user_consultation.values.tolist()
+        for line in user_consultation :
+            path.loc[i] = [user,line[0],line[1],"{}".format(label)]
+            i+=1
+    path['date']=pd.to_datetime(path['date'])
+    path.sort_values(by='date')
+    return path
     
-path(200)
+#on cherche maintenant a obtenir une database avec toutes les connections de tous les utilisateurs
+def path_all():
+    paths=pd.DataFrame(columns=['id_utilisateur','date','region','database'])
+    for user in users:
+        path_user = path(user)
+        paths = pd.concat([path_user,paths])
+    return paths
+paths = path_all()
+#calculer le taux de rebond sur une page
+
+def taux_rebond():
+    one_visit=0
+    users_one_visit=[]
+    for user in users :
+        path_user = path(user)
+        if len(path_user)==1:
+            users_one_visit.append(user)
+            one_visit+=1
+    return one_visit/len(users),users_one_visit
+
+taux, users_one_visit = taux_rebond()
+
+def traj_one_visit():
+    path_one_visit = []
+    for user in users_one_visit:
+        path_one_visit.append(paths[paths['id_utilisateur']==user]['database'])
+    return path_one_visit
+    
+print(len(traj_one_visit()))
+
+
+"""
+Propositions d'indicateurs :
+    Actions moyennes, médianes d'affilé par table
+    Table la plus choisie après une table fixée
+    Temps moyen passé par table
+"""
+
+def calculate_indicators(path):
+    time_in_table = dict()
+    next_table = dict()
+    actions_in_table = dict()
+
+    this_table = path[0]["database"]
+    this_table_time = path[0]["date"]
+    this_table_actions = 0
+
+    for line in path:
+        if(line["database"] != this_table):
+            pass
+
+
 conn.close()

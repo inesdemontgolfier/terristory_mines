@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 # http://initd.org/psycopg/docs/usage.html
-from this import d
 from typing_extensions import dataclass_transform
 import psycopg2
 import datetime
@@ -14,14 +13,14 @@ conn = psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (HOST, DATABAS
 # Open a cursor to send SQL commands
 cur = conn.cursor()
 def monthly_connections_double(date):
-    sql = "SELECT COUNT(*) FROM consultations.ip_localisation WHERE date::text LIKE {}".format(date) #on récupère les données de consultation d'analyse territoriale.
+    sql = "SELECT COUNT(*) FROM consultations.consultations_indicateurs WHERE date::text LIKE {}".format(date) #on récupère les données de consultation d'analyse territoriale.
     cur.execute(sql)
 # Fetch data line by line
     raw = cur.fetchone()
     return raw[0]
 
 def monthly_connections_unique(date):
-    sql = "SELECT COUNT(DISTINCT id_utilisateur) FROM consultations.ip_localisation WHERE date::text LIKE {}".format(date)
+    sql = "SELECT COUNT(DISTINCT id_utilisateur) FROM consultations.consultations_indicateurs WHERE date::text LIKE {}".format(date)
     cur.execute(sql)
 # Fetch data line by line
     raw = cur.fetchone()
