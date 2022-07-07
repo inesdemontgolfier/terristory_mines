@@ -9,6 +9,12 @@ Phil : indicateurs
 Manue : équipements
 Cléa : consultation des pages trajectoires
 
+# Répartition des fichiers
+Chaque fichier a été codé par quelqu'un de différent
+
+Inès:
+Le fichier suivi_actions.py réalise l'analyse d'audience relatif à la consultation globale du site (taux de rebond, consultations par mois ...)
+
 # Court mode d'emploi des fonctions 
 
 taux_rebond : 
