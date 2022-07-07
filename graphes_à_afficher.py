@@ -1,9 +1,11 @@
 from equipements_v2 import consultations_equipements, consultations_themes_equipements
+from matplotlib import pyplot as plt
 
 
 def selection_graphes():
     #Représente la proportion des consultations de chaque catégorie d'équipement dans la région auvergne-rhone-alpes
     consultations_themes_equipements(regions=['auvergne-rhone-alpes'])
+    
 
     #Représente la proportion des consultations de chaque équipement dans la région auvergne-rhone-alpes
     consultations_equipements(regions=['auvergne-rhone-alpes'])
@@ -15,3 +17,4 @@ def selection_graphes():
     consultations_equipements()
 
 selection_graphes()
+
