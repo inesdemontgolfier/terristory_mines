@@ -36,11 +36,11 @@ conn.close()
 df = pd.DataFrame(raw, columns=["id_indicateur", "nom", "ui_theme", "id_utilisateur", "date", "region", "provenance"])
 
 df = correction_themes(df)
+print(len(df))
 df = correction_noms(df)
 df = correction_dates(df)
+print(len(df))
 
-df = correction_noms(df)
-df = correction_themes(df)
 
 def fréquences_indic_majoritaires(data, p, regions, titre_fichier="figures/titre_par_defaut.png", titre_figure="titre_par_défaut"):
     """Renvoie les indicateurs consultés à plus de 100*p pourcents.
