@@ -39,22 +39,17 @@ consultations_indicateurs :
 correction_noms_equipements :
 - renvoie la dataframe avec les noms des équipements uniformisés entre les régions
 
-themes_equipements :
-- renvoie la dataframe avec une nouvelle colonne contenant les catégories (thèmes) d'équipements
-
-fréquences_equipements_majoritaires :
-- Renvoie les equipements consultés à plus de 100*p pourcents.
-    Crée une catégorie "autres" pour ceux dont la fréquence de consultation est inférieure à p.
-    Plote les données et enregistre le diagramme dans le dossier figures.
 
 consultations_equipements :
-- Retourne et affiche le camembert des fréquences de consultation des équipemments (en appelant fréquences_equipements_majoritaires).
-    Choix possible des thèmes et des régions.
-
-consultations_themes_equipements :
-- Retourne et affiche le camembert des fréquences de consultation des indicateurs, groupés par thème (en appelant fréquences_equipements_majoritaires).
+- Retourne, affiche et enregistre le diagramme circulaire des fréquences de consultation des équipemments.
     Choix possible des régions.
 
+consultations_themes_equipements :
+- Retourne, affiche et enregistre le diagramme circulaire des fréquences de consultation des équipements, groupés par thème.
+    Choix possible des régions.
+
+consultation_traj_cesba :
+- Retourne 
 
 
 
