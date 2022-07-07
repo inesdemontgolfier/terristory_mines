@@ -44,7 +44,7 @@ Installations_EnR = ["Chaufferies", "Unité d’incinération des ordures ménag
 
 
 
-def fréquences_equipements_majoritaires(data, p, regions):
+def fréquences_equipements_majoritaires(data, p, regions, titre_figure = figures/"titre par défaut.png"):
     """Renvoie les equipements consultés à plus de 100*p pourcents.
     Crée une catégorie "autres" pour ceux dont la fréquence de consultation est inférieure à p.
     Plote les données.
@@ -65,6 +65,10 @@ def fréquences_equipements_majoritaires(data, p, regions):
     (région(s) : {', '.join((str(region) for region in regions))})
     """)
     plt.pie(fréquences, labels=légende, autopct='%.1f%%')
+    plt.savefig(figures/f"""
+    Consultations des équipements
+    (région(s) : {', '.join((str(region) for region in regions))})
+    """)
     plt.show()
 
     return [légende, fréquences]
