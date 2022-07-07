@@ -61,7 +61,7 @@ def provenance_filtre():
 nb_autre=provenance_tot()-provenance_tdb()-provenance_carto()-provenance_filtre()
 plt.figure(figsize = (8, 8))
 x=[provenance_carto(),provenance_filtre(),provenance_tdb(),nb_autre]
-plt.pie(x, labels=['carto','filtre','tableaux de bord', 'autre'])
+plt.pie(x, labels=['carto','filtre','tableaux de bord', 'autre'], autopct='%.1f%%')
 plt.title('Provenance de la consultation indicateur ')
 plt.show()
 
