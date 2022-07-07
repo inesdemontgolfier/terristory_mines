@@ -27,14 +27,9 @@ consultations.consultations_indicateurs.region,
 consultations.consultations_indicateurs.provenance
 FROM consultations.consultations_indicateurs
 LEFT JOIN meta.indicateur ON consultations.consultations_indicateurs.id_indicateur = meta.indicateur.id
-ORDER BY consultations.consultations_indicateurs.date ASC ;"""
+ORDER BY consultations.consultations_indicateurs.date ASC;"""
 cur.execute(sql)
 raw = cur.fetchall()
-
-
-sql1="SELECT * FROM consultations.consultations_indicateurs WHERE consultations.consultations_indicateurs.provenance NOT LIKE 'tableaux_de_bord'"
-cur.execute(sql1)
-raw1 = cur.fetchall()
 
 conn.close()
 
@@ -43,10 +38,11 @@ df = pd.DataFrame(raw, columns=["id_indicateur", "nom", "ui_theme", "id_utilisat
 df = correction_themes(df)
 df = correction_noms(df)
 df = correction_dates(df)
-print(df)
 
+df = correction_noms(df)
+df = correction_themes(df)
 
-def fréquences_indic_majoritaires(data, p, regions, titre_fichier="figures/titre_par_defaut.png"):
+def fréquences_indic_majoritaires(data, p, regions, titre_fichier="figures/titre_par_defaut.png", titre_figure="titre_par_défaut"):
     """Renvoie les indicateurs consultés à plus de 100*p pourcents.
     Crée une catégorie "autres" pour ceux dont la fréquence de consultation est inférieure à p.
     Plote les données.
@@ -62,11 +58,11 @@ def fréquences_indic_majoritaires(data, p, regions, titre_fichier="figures/titr
             fréquences.append(fréquence)
             légende.append(indicateur)
     
+    plt.title(titre_figure)
     plt.pie(fréquences, labels=légende, autopct='%.1f%%')
-    plt.savefig(titre_fichier)
+    plt.savefig(titre_fichier, bbox_inches="tight")
     plt.show()
     
-
     return [légende, fréquences]
 
 def consultations_indicateurs(p=0.02, themes=df.ui_theme.unique(), regions=df.region.unique(), provenances=df.provenance.unique()):
@@ -77,8 +73,11 @@ def consultations_indicateurs(p=0.02, themes=df.ui_theme.unique(), regions=df.re
     data = df[df["ui_theme"].isin(themes) & df["region"].isin(regions)& df["provenance"].isin(provenances)]
     data_freq = dict(data["nom"].value_counts(normalize=True))
     
-    return fréquences_indic_majoritaires(data_freq, p, regions)
-
+    return fréquences_indic_majoritaires(data_freq, p, regions, titre_fichier="figures/consultations_indicateurs.png", titre_figure=f"""
+    Consultations des indicateurs
+    (région(s) : {', '.join((str(region) for region in regions))})
+    """)
+consultations_indicateurs()
 def consultations_themes(p=0.01, regions=df.region.unique(), provenances=df.provenance.unique()):
     """Retourne et affiche le camembert des fréquences de consultation des indicateurs, groupés par thème.
     Choix possible des régions et des provenances.
@@ -87,9 +86,12 @@ def consultations_themes(p=0.01, regions=df.region.unique(), provenances=df.prov
     data = df[df["region"].isin(regions)& df["provenance"].isin(provenances)]
     data_freq = dict(data["ui_theme"].value_counts(normalize=True))
     
-    return fréquences_indic_majoritaires(data_freq, p, regions, titre_fichier="figures/consultations_indicateurs.png")
-
-consultations_themes(regions=['nouvelle-aquitaine'])
+    return fréquences_indic_majoritaires(data_freq, p, regions, titre_fichier="figures/consultations_indicateurs.png", titre_figure=f"""
+    Consultations des indicateurs classés par themes
+    (région(s) : {', '.join((str(region) for region in regions))})
+    """)
+print(df["ui_theme"].unique())
+consultations_themes()
 
 ## si on veut exclure la provenance tableaux de bord car elle biaise les proportions
 liste=[]
@@ -100,9 +102,6 @@ for i in range(df.shape[0]):
 
 df_new=df.drop(liste)
 
-print(df.shape)
-print(df_new.shape)
-
 def consultations_themes_sans_tbd(p=0.01, regions=df_new.region.unique(), provenances=df_new.provenance.unique()):
     """Retourne et affiche le camembert des fréquences de consultation des indicateurs, groupés par thème.
     Choix possible des régions et des provenances.
@@ -111,7 +110,10 @@ def consultations_themes_sans_tbd(p=0.01, regions=df_new.region.unique(), proven
     data = df_new[df_new["region"].isin(regions)& df_new["provenance"].isin(provenances)]
     data_freq = dict(data["ui_theme"].value_counts(normalize=True))
     
-    return fréquences_indic_majoritaires(data_freq, p, regions, titre_fichier="figures/consultations_indicateurs_sans_tbd.png")
+    return fréquences_indic_majoritaires(data_freq, p, regions, titre_fichier="figures/consultations_indicateurs_sans_tbd.png", titre_figure=f"""
+    Consultations des indicateurs classés par thême sans tableau de bord
+    (région(s) : {', '.join((str(region) for region in regions))})
+    """)
 
 
-consultations_themes_sans_tbd(regions=['nouvelle-aquitaine'])
+consultations_themes_sans_tbd()

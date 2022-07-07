@@ -37,9 +37,10 @@ def correction_themes(df):
     }
 
     for ancien, nouveau in themes.items():
-        #print(df[df["ui_theme"] == ancien])
-        df[df["ui_theme"] == ancien] = nouveau
-        #print(df["ui_theme" == ancien])
+        
+        df.loc[df.ui_theme == ancien, "ui_theme"] = nouveau
+        
+        
     
     return df
 
@@ -67,7 +68,7 @@ def correction_noms(df):
     }
 
     for ancien, nouveau in indicateurs.items():
-        df[df["nom"] == ancien] = nouveau
+        df.loc[df.nom == ancien, "nom"] = nouveau
     
     return df
 

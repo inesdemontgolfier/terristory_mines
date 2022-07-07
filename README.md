@@ -34,6 +34,8 @@ taux_rebond :
 chemin_one_rebond:
 - renvoie la liste des pages consultée qu'une fois (pour tenter d'expliquer la seule consultation)
 
+consultations_indicateurs :
+- renvoie les proportions 
 correction_noms_equipements :
 - renvoie la dataframe avec les noms des équipements uniformisés entre les régions
 

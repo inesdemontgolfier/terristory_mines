@@ -33,11 +33,11 @@ temps_consultations = []
 
 
 t0 = df["date"][0]
-print(t0)
 temps_unique = []
 
 for i in df.index:
     durée = (df["date"][i] - t0).total_seconds()
+    print(durée)
     if durée > 300:
         nouvelle_consultation = True
     else:
@@ -47,6 +47,7 @@ for i in df.index:
         nouvelle_consultation = (df["id_utilisateur"][i] != df["id_utilisateur"][i + 1] or df["id_indicateur"][i] != df["id_indicateur"][i+1])
     except:
         nouvelle_consultation = False
+        
     if nouvelle_consultation:
         if len(temps_unique) > 10:
             temps_consultations.append(temps_unique)
