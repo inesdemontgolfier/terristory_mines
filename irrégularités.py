@@ -10,13 +10,13 @@ def correction_themes(df):
         "Logement résidentiel": "Logement",
         "Pontentiel ENR": "Potentiels ENR",
         "Socio-économie": "Économie et société",
-        "Dépense énergétique" : "Facture énergétique"
+        "Dépense énergétique" : "Facture énergétique",
+        'Émissions GES': "Émissions de GES"
     }
 
     for ancien, nouveau in themes.items():
-        #print(df[df["ui_theme"] == ancien])
-        df[df["ui_theme"] == ancien] = nouveau
-        #print(df["ui_theme" == ancien])
+        #df[df["ui_theme"] == ancien]["ui_theme"] = nouveau
+        df.loc[df.ui_theme == ancien, "ui_theme"] = nouveau
     
     return df
 
@@ -33,17 +33,18 @@ def correction_noms(df):
         "Dépense énergétique par habitant": "Facture énergétique / hab",
         "Dépense énergétique du résidentiel par habitant": "Facture énergétique résidentiel / hab",
         "Production d'énergie renouvelable (2016)": "Prodution ENR",
-        "Émissions de GES": "Émissions GES",
+        "Émissions GES": "Émissions de GES",
         "Dépense énergétique": "Facture énergétique",
         "Émissions de GES du secteur tertiaire par salarié": "Émissions GES tertiaire / employé",
         "Émissions de GES par habitant": "Émissions GES / hab",
         "Émissions de GES du résidentiel par habitant": "Émissions GES résidentiel / hab",
-        "Emissions de gaz à effet de serre": "Émissions GES",
-        "Emissions de GES": "Émissions GES",
-        "GES": "Émissions GES",
+        "Emissions de gaz à effet de serre": "Émissions de GES",
+        "Emissions de GES": "Émissions de GES",
+        "GES": "Émissions de GES",
     }
 
     for ancien, nouveau in indicateurs.items():
-        df[df["nom"] == ancien] = nouveau
+        #df[df["nom"] == ancien] = nouveau
+        df.loc[df.nom == ancien, "nom"] = nouveau
     
     return df
