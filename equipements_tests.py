@@ -6,13 +6,13 @@ from equipements_v2 import consultations_equipements, consultations_themes_equip
 
 
 #Représente la proportion des consultations de chaque catégorie d'équipement dans la région auvergne-rhone-alpes
-consultations_themes_equipements(regions=['auvergne-rhone-alpes'])
+consultations_themes_equipements(regions=['auvergne-rhone-alpes'], titre_figure = "consultation_equipements_v1")
 
 #Représente la proportion des consultations de chaque équipement dans la région auvergne-rhone-alpes
-consultations_equipements(regions=['auvergne-rhone-alpes'])
+consultations_equipements(regions=['auvergne-rhone-alpes'], titre_figure = "consultation_equipements_v2")
 
 #Représente la proportion des consultations de chaque catégorie d'équipement dans toutes les régions répertoriées dans Terristory
-consultations_themes_equipements()
+consultations_themes_equipements(titre_figure = "consultation_equipements_v3")
 
 #Représente la proportion des consultations de chaque équipement dans toutes les régions répertoriées dans Terristory
-consultations_equipements()
+consultations_equipements(titre_figure = "consultation_equipements_v4")

@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 # on importe le fichier de modifications et de normalisation des données
-from equipements_irrégularités import correction_noms_equipements, themes_equipements
+from equipements_irregularites import correction_noms_equipements, themes_equipements
 
 HOST = "localhost"
 USER = "postgres"
@@ -44,7 +44,7 @@ Installations_EnR = ["Chaufferies", "Unité d’incinération des ordures ménag
 
 
 
-def fréquences_equipements_majoritaires(data, p, regions, titre_figure = figures/"titre par défaut.png"):
+def fréquences_equipements_majoritaires(data, p, regions, theme, titre_figure = "figures/titre par défaut.png"):
     """Renvoie les equipements consultés à plus de 100*p pourcents.
     Crée une catégorie "autres" pour ceux dont la fréquence de consultation est inférieure à p.
     Plote les données.
@@ -59,21 +59,23 @@ def fréquences_equipements_majoritaires(data, p, regions, titre_figure = figure
         else:
             fréquences.append(fréquence)
             légende.append(equipement)
-
-    plt.title(f"""
-    Consultations des équipements
-    (région(s) : {', '.join((str(region) for region in regions))})
-    """)
+    if theme:
+        plt.title(f"""
+        Consultations des thèmes d'équipements
+        (région(s) : {', '.join((str(region) for region in regions))})
+        """)
+    else:
+        plt.title(f"""
+        Consultations des équipements
+        (région(s) : {', '.join((str(region) for region in regions))})
+        """)
     plt.pie(fréquences, labels=légende, autopct='%.1f%%')
-    plt.savefig(figures/f"""
-    Consultations des équipements
-    (région(s) : {', '.join((str(region) for region in regions))})
-    """)
+    plt.savefig(titre_figure)
     plt.show()
 
     return [légende, fréquences]
 
-def consultations_equipements(p=0.02, themes=df.theme.unique(), regions=df.region.unique()):
+def consultations_equipements(p=0.02, themes=df.theme.unique(), regions=df.region.unique(), titre_figure = "figures/titre par défaut.png"):
     """Retourne et affiche le camembert des fréquences de consultation des équipemments.
     Choix possible des thèmes et des régions.
     """
@@ -81,13 +83,13 @@ def consultations_equipements(p=0.02, themes=df.theme.unique(), regions=df.regio
     data = df[df["theme"].isin(themes) & df["region"].isin(regions)]
     data_freq = dict(data["nom_couche"].value_counts(normalize=True))
     
-    return fréquences_equipements_majoritaires(data_freq, p, regions)
+    return fréquences_equipements_majoritaires(data_freq, p, regions, False, titre_figure)
 
-def consultations_themes_equipements(p=0.01, regions=df.region.unique()):
+def consultations_themes_equipements(p=0.01, regions=df.region.unique(), titre_figure = "figures/titre par défaut.png"):
     """Retourne et affiche le camembert des fréquences de consultation des indicateurs, groupés par thème.
     Choix possible des régions.
     """
 
     data = df[df["region"].isin(regions)]
     data_freq = dict(data["theme"].value_counts(normalize=True))
-    return fréquences_equipements_majoritaires(data_freq, p, regions)
+    return fréquences_equipements_majoritaires(data_freq, p, regions, True, titre_figure)
