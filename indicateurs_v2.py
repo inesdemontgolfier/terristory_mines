@@ -37,7 +37,7 @@ df = pd.DataFrame(raw, columns=["id_indicateur", "nom", "ui_theme", "date", "reg
 df = correction_themes(df)
 df = correction_noms(df)
 
-def fréquences_indic_majoritaires(data, p, regions):
+def fréquences_indic_majoritaires(data, p, regions, titre_fichier="figures/titretitre_par_defaut.png"):
     """Renvoie les indicateurs consultés à plus de 100*p pourcents.
     Crée une catégorie "autres" pour ceux dont la fréquence de consultation est inférieure à p.
     Plote les données.
