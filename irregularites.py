@@ -1,3 +1,24 @@
+def correction_dates(df):
+    id = df.iloc[0]["id_utilisateur"]
+    ind = df.loc[0]["id_indicateur"]
+    date = df.loc[0]["date"]
+    for i in df.index :
+        if df.iloc[i]["id_utilisateur"]!= id or df.loc[i]["id_indicateur"]!= ind :
+            ind = df.iloc[i]["id_indicateur"]
+            id = df.iloc[i]["id_utilisateur"]
+            date = df.iloc[i]["date"]
+            df.iloc[i]["masque"] = True
+        else :
+            delta_temps = (date - df.iloc[i]["date"]).total_seconds()
+            if delta_temps > 300 :
+                df.iloc[i]["masque"] = True
+                ind = df.iloc[i]["id_indicateur"]
+                id = df.iloc[i]["id_utilisateur"]
+                date = df.iloc[i]["date"]
+            else :
+                df.iloc[i]["masque"] = False
+    return df[df["masque"]==True]
+
 # Première partie : irrégularités sur les indicateurs
 
 # A détecter : indicateurs noms documentés, noms d'indicateurs proches mais pas identiques selon les régions, idem pour les thèmes.
@@ -49,6 +70,7 @@ def correction_noms(df):
         df[df["nom"] == ancien] = nouveau
     
     return df
+
 
 
 
