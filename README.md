@@ -18,17 +18,43 @@ Chaque fichier a été codé par quelqu'un de différent
 Inès:
 Le fichier suivi_actions.py réalise l'analyse d'audience relatif à la consultation globale du site (taux de rebond, consultations par mois ...)
 
+Manuela :
+Le fichier irregularites.py effectue une uniformisation des noms des différents équipements entre les régions et regroupe ces équipements par catégories grâce aux thèmes trouvés sur la version en ligne de Terristory.
+
+Le fichier equipements_v2 permet d'afficher des diagrammes circulaires représentant la proportion de consultation de chaque équipement ou catégorie d'équipements par région ou sur les toutes les régions répertoriées.
+
+
+
 # Court mode d'emploi des fonctions 
 
 taux_rebond : 
 - ne prend pas d'arguments
-- renvoie le taux de rebond, la liste des utilisateurs n'ayaent consultée qu'une page
+- renvoie le taux de rebond, la liste des utilisateurs n'ayant consultée qu'une page
 
 chemin_one_rebond:
 - renvoie la liste des pages consultée qu'une fois (pour tenter d'expliquer la seule consultation)
 
 consultations_indicateurs :
 - renvoie les proportions 
+correction_noms_equipements :
+- renvoie la dataframe avec les noms des équipements uniformisés entre les régions
+
+themes_equipements :
+- renvoie la dataframe avec une nouvelle colonne contenant les catégories (thèmes) d'équipements
+
+fréquences_equipements_majoritaires :
+- Renvoie les equipements consultés à plus de 100*p pourcents.
+    Crée une catégorie "autres" pour ceux dont la fréquence de consultation est inférieure à p.
+    Plote les données et enregistre le diagramme dans le dossier figures.
+
+consultations_equipements :
+- Retourne et affiche le camembert des fréquences de consultation des équipemments (en appelant fréquences_equipements_majoritaires).
+    Choix possible des thèmes et des régions.
+
+consultations_themes_equipements :
+- Retourne et affiche le camembert des fréquences de consultation des indicateurs, groupés par thème (en appelant fréquences_equipements_majoritaires).
+    Choix possible des régions.
+
 
 
 
