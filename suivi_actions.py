@@ -51,10 +51,11 @@ consultations_indicateurs = pd.DataFrame(raw,columns=['id','provenance','region'
 
 cur.execute("SELECT * from consultations.poi")
 raw=cur.fetchall()
-consultations_indicateurs = pd.DataFrame(raw,columns=['id', 'id_utilisateur', 'region','code_territoire', 'type_territoire', 'nom_couche', 'cochee', 'date'])
+poi = pd.DataFrame(raw,columns=['id', 'id_utilisateur', 'region','code_territoire', 'type_territoire', 'nom_couche', 'cochee', 'date'])
 
 users=all_users()
-datas= {"actions_cochees":actions_cochees,"analyses_territoriales":analyses_territoriales,"consultations_indicateurs":consultations_indicateurs}
+datas= {"actions_cochees":actions_cochees,"analyses_territoriales":analyses_territoriales,"consultations_indicateurs":consultations_indicateurs,"poi":poi}
+
 def path(user):
     path=pd.DataFrame(columns=['id_utilisateur','date','region','database'])
     i=0
@@ -66,7 +67,7 @@ def path(user):
             path.loc[i] = [user,line[0],line[1],"{}".format(label)]
             i+=1
     path['date']=pd.to_datetime(path['date'])
-    path.sort_values(by='date')
+    path.sort_values(by='date',ascending=False)
     return path
     
 #on cherche maintenant a obtenir une database avec toutes les connections de tous les utilisateurs
@@ -89,16 +90,12 @@ def taux_rebond():
             one_visit+=1
     return one_visit/len(users),users_one_visit
 
-taux, users_one_visit = taux_rebond()
 
-def traj_one_visit():
-    path_one_visit = []
+def traj_une_visite():
+    path_une_visite = []
     for user in users_one_visit:
         path_one_visit.append(paths[paths['id_utilisateur']==user]['database'])
     return path_one_visit
-    
-print(len(traj_one_visit()))
-
 
 """
 Propositions d'indicateurs :
@@ -107,18 +104,40 @@ Propositions d'indicateurs :
     Temps moyen passé par table
 """
 
-def calculate_indicators(path):
-    time_in_table = dict()
-    next_table = dict()
-    actions_in_table = dict()
+#code pour trouver la page après une page donnée
+#on calcule par la même occasion le temps passé par table
+def next_page():
+    def create_dict(): #on crée un dict avec en clé la page de provenance et en "indice" le nomnbre de fois ou une telle page à été la suivante
+        dct = dict()
+        time=dict()
+        for data in datas.keys() :
+            dct[data]=dict()
+            time[data]=[]
+            for data_next in datas:
+                if data_next != data :
+                    dct[data][data_next]=0
+        return dct,time     
+    dct,time = create_dict()
+    for user in users:
+        path = paths[paths["id_utilisateur"]==user]
+        if path.shape[0]==0:
+            continue
+        page = path.iloc[0]["database"]
+        date = path.iloc[0]["date"]
+        for i in range(1,path.shape[0]):
+            page_next = path.iloc[i]["database"]
+            if page != page_next : #on detecte un changement de la page consultée
+                dct[page][page_next]+=1
+                date_next= path.iloc[i]["date"]
+                time[page].append(date_next-date)
+                date=date_next
+                page = page_next
+    return dct , time
+            
+print(poi)
+print(paths)
+print(next_page())
 
-    this_table = path[0]["database"]
-    this_table_time = path[0]["date"]
-    this_table_actions = 0
-
-    for line in path:
-        if(line["database"] != this_table):
-            pass
 
 
 conn.close()
