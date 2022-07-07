@@ -133,10 +133,7 @@ def next_page():
                 date=date_next
                 page = page_next
     return dct , time
-            
-print(poi)
-print(paths)
-print(next_page())
+
 
 
 

@@ -26,8 +26,6 @@ def monthly_connections_unique(date):
     raw = cur.fetchone()
     return raw[0]
 
-months=[]
-
 #select only the month and the year
 today=str(datetime.date.today())[0:-3]
 
@@ -39,36 +37,49 @@ def date_to_string(year,month):
     date = "{}-{:02}".format(year,month)
     return date
 
-this_month = date_to_string(year,month)
 
-months.append(this_month)
-for i in range (0,12):
-    if month == 12:
-        year +=1
-        month = 1
-    else:
-        month+=1
-    months.append(str(date_to_string(year,month)))
+def liste_mois():
+    months=[]
+    year=int(today[0:4])-1
+    month=int(today[-2:])
+    this_month = date_to_string(year,month)
+    months.append(this_month)
+    for month in range (0,12):
+        if month == 12:
+            year +=1
+            month = 1
+        else:
+            month+=1
+        months.append(str(date_to_string(year,month)))
+    return months
 
-data_connections_double=[]
-for month in months:
-    try :
-        data_connections_double.append(monthly_connections_double("'{}%'".format(month)))
-    except :
-        data_connections_double.append(0)
+def connexions_mois_doublons():
+    months = liste_mois()
+    data_connections_double=[]
+    for month in months:
+        try :
+            data_connections_double.append(monthly_connections_double("'{}%'".format(month)))
+        except :
+            data_connections_double.append(0)
+    plt.bar(months,data_connections_double,1.0)
+    plt.savefig('connexion_mois_double')
+    plt.show()
+    return months, data_connections_double
 
-data_connections_unique=[]
-for month in months:
-    try :
-        data_connections_unique.append(monthly_connections_unique("'{}%'".format(month)))
-    except :
-        data_connections_unique.append(0)
+def connexions_mois_unique():
+    months = liste_mois()
+    data_connections_unique=[]
+    for month in months:
+        try :
+            data_connections_unique.append(monthly_connections_unique("'{}%'".format(month)))
+        except :
+            data_connections_unique.append(0)
+    plt.bar(months,data_connections_unique,1.0)
+    plt.savefig('connexion_mois_unique')
+    plt.show()
+    return months, data_connections_unique 
 
-plt.bar(months,data_connections_double,1.0)
-plt.show()
-
-plt.bar(months,data_connections_unique,1.0)
-plt.show()
-
+connexions_mois_doublons()
+connexions_mois_unique()
 
 conn.close()
