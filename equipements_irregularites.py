@@ -2,7 +2,7 @@
 import numpy as np
 
 def correction_noms_equipements(df):
-    """Uniformise les noms des indicateurs entre les régions, pour permettre une lisibilité nationale des données.
+    """Uniformise les noms des équipements entre les régions, pour permettre une lisibilité nationale des données.
     """
 
     equipements = {"Installations GnV": "Installations GnV et bio-GnV",
