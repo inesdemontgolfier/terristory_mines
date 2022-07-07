@@ -8,8 +8,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 
-from irregularites import correction_themes, correction_noms
-
+from irregularites import correction_themes, correction_noms, correction_dates
 HOST = "localhost"
 USER = "postgres"
 PASSWORD = "postgres"
@@ -22,6 +21,7 @@ cur = conn.cursor()
 sql = """SELECT consultations.consultations_indicateurs.id_indicateur,
 meta.indicateur.nom,
 meta.indicateur.ui_theme,
+consultations.consultations_indicateurs.id,
 consultations.consultations_indicateurs.date,
 consultations.consultations_indicateurs.region,
 consultations.consultations_indicateurs.provenance
@@ -33,11 +33,12 @@ raw = cur.fetchall()
 
 conn.close()
 
-df = pd.DataFrame(raw, columns=["id_indicateur", "nom", "ui_theme", "date", "region", "provenance"])
+df = pd.DataFrame(raw, columns=["id_indicateur", "nom", "ui_theme", "id_utilisateur", "date", "region", "provenance"])
 
-
-df = correction_noms(df)
+# On corrige les données (cf `irrégularités.py`)
+df = correction_dates(df, "id_indicateur")
 df = correction_themes(df)
+df = correction_noms(df)
 
 def fréquences_indic_majoritaires(data, p, regions, titre_fichier="figures/titre_par_defaut.png", titre_figure="titre_par_défaut"):
     """Renvoie les indicateurs consultés à plus de 100*p pourcents.
