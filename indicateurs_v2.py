@@ -59,13 +59,11 @@ def fréquences_indic_majoritaires(data, p, regions, titre_fichier="figures/titr
         else:
             fréquences.append(fréquence)
             légende.append(indicateur)
-
-    plt.title(f"""
-    Consultations des indicateurs
-    (région(s) : {', '.join((str(region) for region in regions))})
-    """)
+    
     plt.pie(fréquences, labels=légende, autopct='%.1f%%')
+    plt.savefig(titre_fichier)
     plt.show()
+    
 
     return [légende, fréquences]
 
@@ -89,7 +87,7 @@ def consultations_themes(p=0.01, regions=df.region.unique(), provenances=df.prov
     
     return fréquences_indic_majoritaires(data_freq, p, regions)
 
-consultations_themes(regions=['nouvelle-aquitaine'])
+consultations_themes(regions=['nouvelle-aquitaine'], titre="consultations_indicateurs")
 
 ## si on veut exclure la provenance tableaux de bord car elle biaise les proportions
 liste=[]
@@ -111,7 +109,7 @@ def consultations_themes_sans_tbd(p=0.01, regions=df_new.region.unique(), proven
     data = df_new[df_new["region"].isin(regions)& df_new["provenance"].isin(provenances)]
     data_freq = dict(data["ui_theme"].value_counts(normalize=True))
     
-    return fréquences_indic_majoritaires(data_freq, p, regions)
+    return fréquences_indic_majoritaires(data_freq, p, regions, titre="consultations_indicateurs_sans_tbd")
 
 
 consultations_themes_sans_tbd(regions=['nouvelle-aquitaine'])
