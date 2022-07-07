@@ -14,29 +14,6 @@ DATABASE = "postgres"
 conn = psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (HOST, DATABASE, USER, PASSWORD))
 # Open a cursor to send SQL commands
 cur = conn.cursor()
-
-def all_users():
-    sql = "SELECT id FROM consultations.ip_localisation"
-    cur.execute(sql)
-# Fetch data line by line
-    raw = cur.fetchall()
-    for i in range(len(raw)) :
-        raw[i]= int(raw[i][0])
-    return raw
-
-"""def user_chemin(user):
-    chemin=[user]
-    datas= ['consultations.actions_cochees','consultations.analyses_territoriales','consultations.consultations_indicateurs']
-    for data in datas: 
-        sql = "SELECT  * FROM {} WHERE id_utilisateur={}".format(data, user)
-        cur.execute(sql)
-        raw=cur.fetchall()
-        chemin.append(raw)
-    return chemin
-print(user_chemin(200))"""
-
-#import de toutes les données pour les traiter dans pandas
-
 cur.execute(" SELECT * from consultations.actions_cochees")
 raw = cur.fetchall()
 actions_cochees = pd.DataFrame(raw, columns=['id','region','listes_actions','liste_trajectoire_cible','types_actioons','date','code_territoire','type_territoire','id_utilisateur'])
@@ -55,6 +32,59 @@ poi = pd.DataFrame(raw,columns=['id', 'id_utilisateur', 'region','code_territoir
 
 users=all_users()
 datas= {"actions_cochees":actions_cochees,"analyses_territoriales":analyses_territoriales,"consultations_indicateurs":consultations_indicateurs,"poi":poi}
+
+def moisly_connections_unique(page,date):
+    sql = "SELECT COUNT(DISTINCT id_utilisateur) FROM {} WHERE date::text LIKE {}".format(page,date)
+    cur.execute(sql)
+    raw = cur.fetchone()
+    return raw[0]
+
+#select only the mois and the year
+today=str(datetime.date.today())[0:-3]
+
+#we chose to visiualize datas for 1 year
+year=int(today[0:4])-1
+mois=int(today[-2:])
+
+def date_to_string(year,mois):
+    date = "{}-{:02}".format(year,mois)
+    return date
+
+
+def list_mois():
+    liste_mois=[]
+    year=int(today[0:4])-1
+    mois=int(today[-2:])
+    this_mois = date_to_string(year,mois)
+    liste_mois.append(this_mois)
+    for mois in range (0,12):
+        if mois == 12:
+            year +=1
+            mois = 1
+        else:
+            mois+=1
+        liste_mois.append(str(date_to_string(year,mois)))
+    return liste_mois
+
+def connexions_mois_unique(page):
+    liste_mois = list_mois()
+    data_connections_unique=[]
+    for mois in liste_mois:
+        data_connections_unique.append(moisly_connections_unique(page,"'{}%'".format(mois)))
+    plt.bar(liste_mois,data_connections_unique,1.0)
+    plt.savefig('connexion_mois')
+    plt.show()
+    return liste_mois, data_connections_unique 
+
+print(connexions_mois_unique('consultations.analyses_territoriales'))
+def all_users():
+    sql = "SELECT id FROM consultations.ip_localisation"
+    cur.execute(sql)
+# Fetch data line by line
+    raw = cur.fetchall()
+    for i in range(len(raw)) :
+        raw[i]= int(raw[i][0])
+    return raw
 
 def chemin(user):
     chemin=pd.DataFrame(columns=['id_utilisateur','date','region','database'])
@@ -94,8 +124,8 @@ def taux_rebond():
 def traj_une_visite():
     chemin_une_visite = []
     for user in users_one_visit:
-        chemin_one_visit.append(chemins[chemins['id_utilisateur']==user]['database'])
-    return chemin_one_visit
+        chemin_une_visite.append(chemins[chemins['id_utilisateur']==user]['database'])
+    return chemin_une_visite
 
 """
 Propositions d'indicateurs :
