@@ -67,8 +67,3 @@ plt.ylabel("Requêtes différentes")
 plt.yticks(ticks=[], labels=[])
 plt.title('Enregistrements des consultations (utilisateur, indicateur unique, à moins de 5 minutes)')
 plt.show()
-
-
-moustache = [len(consultation) for consultation in temps_consultations]
-plt.boxplot(moustache)
-plt.show()

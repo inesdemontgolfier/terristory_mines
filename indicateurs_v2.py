@@ -61,6 +61,7 @@ def fréquences_indic_majoritaires(data, p, regions, titre_fichier="figures/titr
             légende.append(indicateur)
     
     plt.pie(fréquences, labels=légende, autopct='%.1f%%')
+    plt.title(f"""Consultation des indicateurs (région(s) : {', '.join((str(region) for region in regions))})""")
     plt.savefig(titre_fichier)
     plt.show()
     
