@@ -30,8 +30,10 @@ cur.execute(sql)
 raw = cur.fetchall()
 conn.close()
 
+# On change la structure de données en travaillant, dans cette version, avec pandas.
 df = pd.DataFrame(raw, columns=["id_indicateur", "nom", "ui_theme", "date", "region", "provenance"])
 
+# On corrige les données (cf `irrégularités.py`)
 df = correction_themes(df)
 df = correction_noms(df)
 

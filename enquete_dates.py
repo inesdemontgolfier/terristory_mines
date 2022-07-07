@@ -1,3 +1,7 @@
+# Support à la recherche sur les doublons/redondances de dates dans la base de données.
+# N'est pas destiné à être exploité par TerriStory.
+# A servi à mieux connapitre la base de données.
+
 #!/usr/bin/python3
 # http://initd.org/psycopg/docs/usage.html
 #from this import d
