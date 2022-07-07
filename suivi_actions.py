@@ -183,5 +183,4 @@ def next_page():
                 page = page_next
     return dct , time
 
-
 conn.close()
