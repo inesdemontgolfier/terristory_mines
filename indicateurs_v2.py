@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 
-from irrégularités import correction_themes, correction_noms
+from irregularites import correction_themes, correction_noms
 
 HOST = "localhost"
 USER = "postgres"
