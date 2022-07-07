@@ -13,10 +13,14 @@ conn = psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (HOST, DATABAS
 # Open a cursor to send SQL commands
 cur = conn.cursor()
 
+
+
 ## AFFCIHAGE DE LA PROPORTION DE CONSULTATIONS PASSANT PAR LA PAGE SUIVI TRAJECTOIRE
 def nb_consultations_traj():
     sql= "SELECT COUNT(*) FROM consultations.analyses_territoriales WHERE page='suivi_trajectoire'"
+    
     cur.execute(sql)
+    
     # Fetch data line by line
     raw = cur.fetchone()
     return raw[0]
@@ -44,4 +48,3 @@ plt.show()
 ## AFFCIHAGE DE LA PROPORTION DE CONSULTATIONS PASSANT PAR LA PAGE SUIVI TRAJECTOIRE EN FONCTION DE LA DATE (il suffit de rajouter une condition dans la commande sql du code d'Inès)
 
 
-conn.close()

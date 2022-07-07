@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # http://initd.org/psycopg/docs/usage.html
 #from this import d
+#from turtle import shape
 from typing_extensions import dataclass_transform
 import psycopg2
 from matplotlib import pyplot as plt
@@ -28,6 +29,12 @@ FROM consultations.consultations_indicateurs
 LEFT JOIN meta.indicateur ON consultations.consultations_indicateurs.id_indicateur = meta.indicateur.id;"""
 cur.execute(sql)
 raw = cur.fetchall()
+
+
+sql1="SELECT * FROM consultations.consultations_indicateurs WHERE consultations.consultations_indicateurs.provenance NOT LIKE 'tableaux_de_bord'"
+cur.execute(sql1)
+raw1 = cur.fetchall()
+
 conn.close()
 
 # On change la structure de données en travaillant, dans cette version, avec pandas.
@@ -82,4 +89,29 @@ def consultations_themes(p=0.01, regions=df.region.unique(), provenances=df.prov
     
     return fréquences_indic_majoritaires(data_freq, p, regions)
 
-consultations_indicateurs(regions=['auvergne-rhone-alpes'])
+consultations_themes(regions=['nouvelle-aquitaine'])
+
+## si on veut exclure la provenance tableaux de bord car elle biaise les proportions
+liste=[]
+for i in range(df.shape[0]):
+    if df.provenance[i]!="tableaux_de_bord":
+        liste.append(i)
+
+
+df_new=df.drop(liste)
+
+print(df.shape)
+print(df_new.shape)
+
+def consultations_themes_sans_tbd(p=0.01, regions=df_new.region.unique(), provenances=df_new.provenance.unique()):
+    """Retourne et affiche le camembert des fréquences de consultation des indicateurs, groupés par thème.
+    Choix possible des régions et des provenances.
+    """
+
+    data = df_new[df_new["region"].isin(regions)& df_new["provenance"].isin(provenances)]
+    data_freq = dict(data["ui_theme"].value_counts(normalize=True))
+    
+    return fréquences_indic_majoritaires(data_freq, p, regions)
+
+
+consultations_themes_sans_tbd(regions=['nouvelle-aquitaine'])

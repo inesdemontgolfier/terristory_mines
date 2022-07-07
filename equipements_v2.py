@@ -7,7 +7,8 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 
-from irrégularités_equipements import correction_noms_equipements, themes_equipements
+# on importe le fichier de modifications et de normalisation des données
+from equipements_irrégularités import correction_noms_equipements, themes_equipements
 
 HOST = "localhost"
 USER = "postgres"
@@ -86,9 +87,3 @@ def consultations_themes_equipements(p=0.01, regions=df.region.unique()):
     data = df[df["region"].isin(regions)]
     data_freq = dict(data["theme"].value_counts(normalize=True))
     return fréquences_equipements_majoritaires(data_freq, p, regions)
-
-consultations_themes_equipements(regions=['auvergne-rhone-alpes'])
-consultations_equipements(regions=['auvergne-rhone-alpes'])
-consultations_themes_equipements()
-consultations_equipements()
-
