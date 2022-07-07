@@ -35,12 +35,10 @@ conn.close()
 
 df = pd.DataFrame(raw, columns=["id_indicateur", "nom", "ui_theme", "id_utilisateur", "date", "region", "provenance"])
 
+# On corrige les données (cf `irrégularités.py`)
+df = correction_dates(df, "id_indicateur")
 df = correction_themes(df)
-print(len(df))
 df = correction_noms(df)
-df = correction_dates(df)
-print(len(df))
-
 
 def fréquences_indic_majoritaires(data, p, regions, titre_fichier="figures/titre_par_defaut.png", titre_figure="titre_par_défaut"):
     """Renvoie les indicateurs consultés à plus de 100*p pourcents.
@@ -77,7 +75,7 @@ def consultations_indicateurs(p=0.02, themes=df.ui_theme.unique(), regions=df.re
     Consultations des indicateurs
     (région(s) : {', '.join((str(region) for region in regions))})
     """)
-consultations_indicateurs()
+consultations_indicateurs(p=0.01)
 def consultations_themes(p=0.01, regions=df.region.unique(), provenances=df.provenance.unique()):
     """Retourne et affiche le camembert des fréquences de consultation des indicateurs, groupés par thème.
     Choix possible des régions et des provenances.
@@ -94,13 +92,8 @@ print(df["ui_theme"].unique())
 consultations_themes()
 
 ## si on veut exclure la provenance tableaux de bord car elle biaise les proportions
-liste=[]
-for i in range(df.shape[0]):
-    if df.provenance[i]!="tableaux_de_bord":
-        liste.append(i)
 
-
-df_new=df.drop(liste)
+df_new=df[df.provenance!='tableaux_de_bord']
 
 def consultations_themes_sans_tbd(p=0.01, regions=df_new.region.unique(), provenances=df_new.provenance.unique()):
     """Retourne et affiche le camembert des fréquences de consultation des indicateurs, groupés par thème.

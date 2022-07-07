@@ -1,3 +1,7 @@
+# Support à la recherche sur les doublons/redondances de dates dans la base de données.
+# N'est pas destiné à être exploité par TerriStory.
+# A servi à mieux connapitre la base de données.
+
 #!/usr/bin/python3
 # http://initd.org/psycopg/docs/usage.html
 #from this import d
@@ -62,9 +66,4 @@ plt.xlabel("Temps à partir du premier enregistrement (s)")
 plt.ylabel("Requêtes différentes")
 plt.yticks(ticks=[], labels=[])
 plt.title('Enregistrements des consultations (utilisateur, indicateur unique, à moins de 5 minutes)')
-plt.show()
-
-
-moustache = [len(consultation) for consultation in temps_consultations]
-plt.boxplot(moustache)
 plt.show()

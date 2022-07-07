@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 # on importe le fichier de modifications et de normalisation des données
-from irregularites import correction_noms_equipements, themes_equipements
+from irregularites import correction_noms_equipements, themes_equipements, correction_dates
 
 HOST = "localhost"
 USER = "postgres"
@@ -29,11 +29,11 @@ cur.execute(sql)
 raw = cur.fetchall()
 conn.close()
 
-df = pd.DataFrame(raw, columns=["Id", "Id_utilisateur", "region", "nom_couche", "date"])
+df = pd.DataFrame(raw, columns=["id", "id_utilisateur", "region", "nom_couche", "date"])
 
+df = correction_dates(df, "id")
 df = correction_noms_equipements(df)
 df = themes_equipements(df)
-
 
 #Rappel des catégories
 Carburants_alternatifs = ["Bornes de recharge de véhicules électriques", "Bornes hydrogène", "Installations GnV et bio-GnV"]

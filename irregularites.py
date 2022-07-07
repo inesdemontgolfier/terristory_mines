@@ -1,11 +1,11 @@
-def correction_dates(df):
+def correction_dates(df, type_de_donnée):
     df["masque"]=np.nan
     id = df.iloc[0, df.columns.get_loc("id_utilisateur")]
-    ind = df.iloc[0, df.columns.get_loc("id_indicateur")]
+    ind = df.iloc[0, df.columns.get_loc(type_de_donnée)]
     date = df.iloc[0, df.columns.get_loc("date")]
     for i in df.index :
-        if df.iloc[i, df.columns.get_loc("id_utilisateur")]!= id and df.iloc[i, df.columns.get_loc("id_indicateur")]!= ind :
-            ind = df.iloc[i, df.columns.get_loc("id_indicateur")]
+        if df.iloc[i, df.columns.get_loc("id_utilisateur")]!= id and df.iloc[i, df.columns.get_loc(type_de_donnée)]!= ind :
+            ind = df.iloc[i, df.columns.get_loc(type_de_donnée)]
             id = df.iloc[i, df.columns.get_loc("id_utilisateur")]
             date = df.iloc[i, df.columns.get_loc("date")]
             df.iloc[i, df.columns.get_loc("masque")] = True
@@ -13,7 +13,7 @@ def correction_dates(df):
             delta_temps = -(date - df.iloc[i, df.columns.get_loc("date")]).total_seconds()
             if delta_temps > 300 :
                 df.iloc[i, df.columns.get_loc("masque")] = True
-                ind = df.iloc[i, df.columns.get_loc("id_indicateur")]
+                ind = df.iloc[i, df.columns.get_loc(type_de_donnée)]
                 id = df.iloc[i, df.columns.get_loc("id_utilisateur")]
                 date = df.iloc[i, df.columns.get_loc("date")]
             else :
