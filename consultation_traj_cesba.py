@@ -43,7 +43,7 @@ plt.figure(figsize = (8, 8))
 x=[nb_consultations_cesba1, nb_consultations_traj1]
 plt.pie(x, labels=['Cesba', 'Suivi trajectoire' ])
 plt.title('Provenance de la consultation')
-plt.savefig("provenance_consultation")
+plt.savefig("figures/provenance_consultation.png")
 plt.show()
 
 
