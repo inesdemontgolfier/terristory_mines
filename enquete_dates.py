@@ -33,11 +33,11 @@ temps_consultations = []
 
 
 t0 = df["date"][0]
+print(t0)
 temps_unique = []
 
 for i in df.index:
     durée = (df["date"][i] - t0).total_seconds()
-    print(durée)
     if durée > 300:
         nouvelle_consultation = True
     else:
@@ -47,33 +47,12 @@ for i in df.index:
         nouvelle_consultation = (df["id_utilisateur"][i] != df["id_utilisateur"][i + 1] or df["id_indicateur"][i] != df["id_indicateur"][i+1])
     except:
         nouvelle_consultation = False
-        
     if nouvelle_consultation:
         if len(temps_unique) > 10:
             temps_consultations.append(temps_unique)
         temps_unique = []
         t0 = df["date"][i + 1]
 
-def corrections_date(df):
-    id = df.iloc[0]["id_utilisateur"]
-    ind = df.loc[0]["id_indicateur"]
-    date = df.loc[0]["date"]
-    for i in df.index :
-        if df.iloc[i]["id_utilisateur"]!= id or df.loc[i]["id_indicateur"]!= ind :
-            ind = df.iloc[i]["id_indicateur"]
-            id = df.iloc[i]["id_utilisateur"]
-            date = df.iloc[i]["date"]
-            df.iloc[i]["masque"] = True
-        else :
-            delta_temps = (date - df.iloc[i]["date"]).total_seconds()
-            if delta_temps > 300 :
-                df.iloc[i]["masque"] = True
-                ind = df.iloc[i]["id_indicateur"]
-                id = df.iloc[i]["id_utilisateur"]
-                date = df.iloc[i]["date"]
-            else :
-                df.iloc[i]["masque"] = False
-    return df[df["masque"]==True]
 
 h=0
 for consultation in temps_consultations:
