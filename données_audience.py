@@ -12,72 +12,72 @@ DATABASE = "postgres"
 conn = psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (HOST, DATABASE, USER, PASSWORD))
 # Open a cursor to send SQL commands
 cur = conn.cursor()
-def monthly_connections_double(date):
+def moisly_connections_double(date):
     sql = "SELECT COUNT(*) FROM consultations.analyses_territoriales WHERE date::text LIKE {}".format(date)
     cur.execute(sql)
 # Fetch data line by line
     raw = cur.fetchone()
     return raw[0]
 
-def monthly_connections_unique(date):
+def moisly_connections_unique(date):
     sql = "SELECT COUNT(DISTINCT id_utilisateur) FROM consultations.analyses_territoriales WHERE date::text LIKE {}".format(date)
     cur.execute(sql)
 # Fetch data line by line
     raw = cur.fetchone()
     return raw[0]
 
-#select only the month and the year
+#select only the mois and the year
 today=str(datetime.date.today())[0:-3]
 
 #we chose to visiualize datas for 1 year
 year=int(today[0:4])-1
-month=int(today[-2:])
+mois=int(today[-2:])
 
-def date_to_string(year,month):
-    date = "{}-{:02}".format(year,month)
+def date_to_string(year,mois):
+    date = "{}-{:02}".format(year,mois)
     return date
 
 
 def liste_mois():
-    months=[]
+    liste_mois=[]
     year=int(today[0:4])-1
-    month=int(today[-2:])
-    this_month = date_to_string(year,month)
-    months.append(this_month)
-    for month in range (0,12):
-        if month == 12:
+    mois=int(today[-2:])
+    this_mois = date_to_string(year,mois)
+    liste_mois.append(this_mois)
+    for mois in range (0,12):
+        if mois == 12:
             year +=1
-            month = 1
+            mois = 1
         else:
-            month+=1
-        months.append(str(date_to_string(year,month)))
-    return months
+            mois+=1
+        liste_mois.append(str(date_to_string(year,mois)))
+    return liste_mois
 
 def connexions_mois_doublons():
-    months = liste_mois()
+    liste_mois = liste_mois()
     data_connections_double=[]
-    for month in months:
+    for mois in liste_mois:
         try :
-            data_connections_double.append(monthly_connections_double("'{}%'".format(month)))
+            data_connections_double.append(moisly_connections_double("'{}%'".format(mois)))
         except :
             data_connections_double.append(0)
-    plt.bar(months,data_connections_double,1.0)
+    plt.bar(liste_mois,data_connections_double,1.0)
     plt.savefig('connexion_mois_double')
     plt.show()
-    return months, data_connections_double
+    return liste_mois, data_connections_double
 
 def connexions_mois_unique():
-    months = liste_mois()
+    liste_mois = liste_mois()
     data_connections_unique=[]
-    for month in months:
+    for mois in liste_mois:
         try :
-            data_connections_unique.append(monthly_connections_unique("'{}%'".format(month)))
+            data_connections_unique.append(moisly_connections_unique("'{}%'".format(mois)))
         except :
             data_connections_unique.append(0)
-    plt.bar(months,data_connections_unique,1.0)
+    plt.bar(liste_mois,data_connections_unique,1.0)
     plt.savefig('connexion_mois_unique')
     plt.show()
-    return months, data_connections_unique 
+    return liste_mois, data_connections_unique 
 
 connexions_mois_doublons()
 connexions_mois_unique()

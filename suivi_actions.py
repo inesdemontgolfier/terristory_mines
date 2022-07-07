@@ -24,16 +24,16 @@ def all_users():
         raw[i]= int(raw[i][0])
     return raw
 
-"""def user_path(user):
-    path=[user]
+"""def user_chemin(user):
+    chemin=[user]
     datas= ['consultations.actions_cochees','consultations.analyses_territoriales','consultations.consultations_indicateurs']
     for data in datas: 
         sql = "SELECT  * FROM {} WHERE id_utilisateur={}".format(data, user)
         cur.execute(sql)
         raw=cur.fetchall()
-        path.append(raw)
-    return path
-print(user_path(200))"""
+        chemin.append(raw)
+    return chemin
+print(user_chemin(200))"""
 
 #import de toutes les données pour les traiter dans pandas
 
@@ -56,46 +56,46 @@ poi = pd.DataFrame(raw,columns=['id', 'id_utilisateur', 'region','code_territoir
 users=all_users()
 datas= {"actions_cochees":actions_cochees,"analyses_territoriales":analyses_territoriales,"consultations_indicateurs":consultations_indicateurs,"poi":poi}
 
-def path(user):
-    path=pd.DataFrame(columns=['id_utilisateur','date','region','database'])
+def chemin(user):
+    chemin=pd.DataFrame(columns=['id_utilisateur','date','region','database'])
     i=0
     for label in datas.keys():
         data =datas[label]
         user_consultation = data[data['id_utilisateur']==user][['date','region']]
         user_consultation = user_consultation.values.tolist()
         for line in user_consultation :
-            path.loc[i] = [user,line[0],line[1],"{}".format(label)]
+            chemin.loc[i] = [user,line[0],line[1],"{}".format(label)]
             i+=1
-    path['date']=pd.to_datetime(path['date'])
-    path.sort_values(by='date',ascending=False)
-    return path
+    chemin['date']=pd.to_datetime(chemin['date'])
+    chemin.sort_values(by='date',ascending=False)
+    return chemin
     
 #on cherche maintenant a obtenir une database avec toutes les connections de tous les utilisateurs
-def path_all():
-    paths=pd.DataFrame(columns=['id_utilisateur','date','region','database'])
+def chemin_all():
+    chemins=pd.DataFrame(columns=['id_utilisateur','date','region','database'])
     for user in users:
-        path_user = path(user)
-        paths = pd.concat([path_user,paths])
-    return paths
-paths = path_all()
+        chemin_user = chemin(user)
+        chemins = pd.concat([chemin_user,chemins])
+    return chemins
+chemins = chemin_all()
 #calculer le taux de rebond sur une page
 
 def taux_rebond():
     one_visit=0
     users_one_visit=[]
     for user in users :
-        path_user = path(user)
-        if len(path_user)==1:
+        chemin_user = chemin(user)
+        if len(chemin_user)==1:
             users_one_visit.append(user)
             one_visit+=1
     return one_visit/len(users),users_one_visit
 
 
 def traj_une_visite():
-    path_une_visite = []
+    chemin_une_visite = []
     for user in users_one_visit:
-        path_one_visit.append(paths[paths['id_utilisateur']==user]['database'])
-    return path_one_visit
+        chemin_one_visit.append(chemins[chemins['id_utilisateur']==user]['database'])
+    return chemin_one_visit
 
 """
 Propositions d'indicateurs :
@@ -119,16 +119,16 @@ def next_page():
         return dct,time     
     dct,time = create_dict()
     for user in users:
-        path = paths[paths["id_utilisateur"]==user]
-        if path.shape[0]==0:
+        chemin = chemins[chemins["id_utilisateur"]==user]
+        if chemin.shape[0]==0:
             continue
-        page = path.iloc[0]["database"]
-        date = path.iloc[0]["date"]
-        for i in range(1,path.shape[0]):
-            page_next = path.iloc[i]["database"]
+        page = chemin.iloc[0]["database"]
+        date = chemin.iloc[0]["date"]
+        for i in range(1,chemin.shape[0]):
+            page_next = chemin.iloc[i]["database"]
             if page != page_next : #on detecte un changement de la page consultée
                 dct[page][page_next]+=1
-                date_next= path.iloc[i]["date"]
+                date_next= chemin.iloc[i]["date"]
                 time[page].append(date_next-date)
                 date=date_next
                 page = page_next
