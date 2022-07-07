@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 # on importe le fichier de modifications et de normalisation des données
-from equipements_irregularites import correction_noms_equipements, themes_equipements
+from irregularites import correction_noms_equipements, themes_equipements
 
 HOST = "localhost"
 USER = "postgres"
