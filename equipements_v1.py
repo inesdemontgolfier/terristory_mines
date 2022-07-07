@@ -1,5 +1,7 @@
+# CODE OBSOLETE
+
 # ce fichier contient une ancienne version de réccupération de données grâce à des requêtes SQL
-# ceci est un exemple de code non optimisé pour voir l'évolution de notre code
+# ceci est un exemple de code non optimisé avec beaucoup de requêtes SQL
 #!/usr/bin/python3
 # http://initd.org/psycopg/docs/usage.html
 from typing_extensions import dataclass_transform
